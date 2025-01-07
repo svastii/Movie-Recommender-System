@@ -4,30 +4,29 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 import os
-# Load data and similarity matrix
-def configure():
- load_dotenv()
- 
- 
 
+# Load environment variables
+load_dotenv()
+
+# Load data and similarity matrix
 movies = pd.read_csv('dataset/top10K-TMDB-movies.csv')
 similarity = pickle.load(open('dataset/similarity.pkl', 'rb'))
 
+# Fetch OMDB API key from .env file
+OMDB_API_KEY = os.getenv("OMDB_API_KEY")
 
 # Function to fetch movie poster from OMDB API
 def fetch_poster(movie_title):
-    configure()
     try:
-        url = f"http://www.omdbapi.com/?t={movie_title}&apikey={os.getenv('OMDB_API_KEY')}"
+        url = f"http://www.omdbapi.com/?t={movie_title}&apikey={OMDB_API_KEY}"
         response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
             return data.get('Poster', "https://via.placeholder.com/500x750?text=No+Image+Available")
         return "https://via.placeholder.com/500x750?text=No+Image+Available"
-    except Exception as e:
+    except Exception:
         return "https://via.placeholder.com/500x750?text=Error+Fetching+Image"
 
-# Function to recommend movies
 # Function to recommend movies
 def recommend(movie):
     if movie not in movies['title'].values:
@@ -77,14 +76,15 @@ st.markdown(
 
 st.markdown('<div class="title">Movie Recommender System</div>', unsafe_allow_html=True)
 
-movie_name = st.selectbox("Select movie from dropdown:", movies['title'].values)
+# Dropdown for movie selection
+movie_name = st.selectbox("Select a movie from the dropdown:", movies['title'].values)
 
+# Recommend button
 if st.button("Show Recommend", key="recommend_button"):
     recommendations, posters = recommend(movie_name)
     if recommendations[0] == "Movie not found in the dataset.":
         st.error("Movie not found in the dataset. Please try another movie.")
     else:
-        st.write("")
         st.write("Recommended Movies:")
         cols = st.columns(5)  # Create columns for horizontal layout
         for idx, (title, poster) in enumerate(zip(recommendations, posters)):
