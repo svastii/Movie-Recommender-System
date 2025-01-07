@@ -3,3 +3,4 @@ env
 apikey.txt
 OMDB_API_KEY
 *.key
+.vscode

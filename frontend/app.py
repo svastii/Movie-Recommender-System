@@ -2,12 +2,10 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
-from dotenv import load_dotenv
 # Load data and similarity matrix
 movies = pd.read_csv('dataset/top10K-TMDB-movies.csv')
 similarity = pickle.load(open('dataset/similarity.pkl', 'rb'))
-load_dotenv()
-OMDB_API_KEY = '4c38292b'
+OMDB_API_KEY = "4c38292b"
 
 # Function to fetch movie poster from OMDB API
 def fetch_poster(movie_title):
