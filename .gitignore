@@ -1,3 +1,4 @@
 env
-OMDB_API_KEY
 apikey.txt
+OMDB_API_KEY
+*.key
