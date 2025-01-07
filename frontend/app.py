@@ -2,15 +2,23 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
+from dotenv import load_dotenv
+import os
 # Load data and similarity matrix
+def configure():
+ load_dotenv()
+ 
+ 
+
 movies = pd.read_csv('dataset/top10K-TMDB-movies.csv')
 similarity = pickle.load(open('dataset/similarity.pkl', 'rb'))
-OMDB_API_KEY = "4c38292b"
+
 
 # Function to fetch movie poster from OMDB API
 def fetch_poster(movie_title):
+    configure()
     try:
-        url = f"http://www.omdbapi.com/?t={movie_title}&apikey={OMDB_API_KEY}"
+        url = f"http://www.omdbapi.com/?t={movie_title}&apikey={os.getenv('OMDB_API_KEY')}"
         response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
@@ -19,6 +27,7 @@ def fetch_poster(movie_title):
     except Exception as e:
         return "https://via.placeholder.com/500x750?text=Error+Fetching+Image"
 
+# Function to recommend movies
 # Function to recommend movies
 def recommend(movie):
     if movie not in movies['title'].values:
