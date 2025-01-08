@@ -2,23 +2,16 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
-from dotenv import load_dotenv
-import os
-
-# Load environment variables
-load_dotenv()
+import creds # Importing your creds.py file
 
 # Load data and similarity matrix
 movies = pd.read_csv('dataset/top10K-TMDB-movies.csv')
 similarity = pickle.load(open('dataset/similarity.pkl', 'rb'))
 
-# Fetch OMDB API key from .env file
-OMDB_API_KEY = os.getenv("OMDB_API_KEY")
-
 # Function to fetch movie poster from OMDB API
 def fetch_poster(movie_title):
     try:
-        url = f"http://www.omdbapi.com/?t={movie_title}&apikey={OMDB_API_KEY}"
+        url = f"http://www.omdbapi.com/?t={movie_title}&apikey={creds.OMDB_API_KEY}"
         response = requests.get(url)
         if response.status_code == 200:
             data = response.json()
